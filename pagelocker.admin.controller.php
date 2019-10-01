@@ -27,7 +27,9 @@ class pagelockerAdminController extends pagelocker
 		$this->pagelockerConfig->enabled = Context::get('use_lock');
 		$this->pagelockerConfig->page_auth_expire_time = Context::get('page_auth_expire_time');
 		$this->pagelockerConfig->page_auth_expire_time_unit = Context::get('page_auth_expire_time_unit');
+		$this->pagelockerConfig->page_lock_type = Context::get('page_lock_type');
 		$this->pagelockerConfig->page_password = Context::get('page_password');
+		$this->pagelockerConfig->use_each_document_lock = Context::get('use_each_document_lock');
 
 		$oModuleController = getController('module');
 		$oModuleController->insertModulePartConfig('pagelocker', $target_module_srl, $this->pagelockerConfig);

@@ -29,6 +29,14 @@ class pagelockerController extends pagelocker
 		$oPagelockerModel = getModel('pagelocker');
 		$config = $oPagelockerModel->getPagelockerPartConfig($this->module_info->module_srl);
 
+		// 문서 번호
+		$document_srl = Context::get('document_srl');
+
+		if($config->use_each_document_lock === 'Y')
+		{
+			$oDocument = getModel('document')->getDocument($document_srl);
+		}
+
 		// 비밀번호 잠금이면서 비밀번호를 입력하지 않은 경우
 		if(!$page_password && $config->page_lock_type == 'password')
 		{
@@ -45,10 +53,30 @@ class pagelockerController extends pagelocker
 			$_SESSION['XE_PAGE_AUTHORIZED_TIME'] = array();
 		}
 
-		// 비밀번호 잠금이면서 비밀번호가 틀린 경우
-		if($config->page_password != $page_password && $config->page_lock_type == 'password')
+		if(!is_array($_SESSION['XE_DOCUMENT_AUTHORIZED']))
 		{
-			$_SESSION['XE_PAGE_AUTHORIZED'][$this->module_info->module_srl] = false;
+			$_SESSION['XE_DOCUMENT_AUTHORIZED'] = array();
+		}
+
+		if(!is_array($_SESSION['XE_DOCUMENT_AUTHORIZED_TIME']))
+		{
+			$_SESSION['XE_DOCUMENT_AUTHORIZED_TIME'] = array();
+		}
+
+		$bIsCorrectPassword = $config->page_password != $page_password && ($oDocument && $oDocument->getExtraEidValue('lock_password') == $page_password);
+
+		// 비밀번호 잠금이면서 비밀번호가 틀린 경우
+		if(!$bIsCorrectPassword && $config->page_lock_type == 'password')
+		{
+			if($config->use_each_document_lock == 'Y')
+			{
+				$_SESSION['XE_DOCUMENT_AUTHORIZED'][$document_srl] = false;
+			}
+			else
+			{
+				$_SESSION['XE_PAGE_AUTHORIZED'][$this->module_info->module_srl] = false;
+			}
+
 			return $this->makeObject(-1, '비밀번호가 맞지 않습니다.');
 		}
 
@@ -74,12 +102,16 @@ class pagelockerController extends pagelocker
 				$expireTime *= 60 * 60 * 24;
 				break;
 			case 'MONTHS':
-				$expireTime *= 60 * 60 * 30;
+				$expireTime *= 60 * 60 * 24 * 30;
 				break;
 		}
 
 		$usePointUnlock = $config->page_unlock_point > 0 && $config->page_lock_type == 'point';
-		if($config->page_auth_expire_time > 0 && (!$_SESSION['XE_PAGE_AUTHORIZED_TIME'][$this->module_info->module_srl] || time() <= $_SESSION['XE_PAGE_AUTHORIZED_TIME'][$this->module_info->module_srl] + $expireTime))
+
+		$bIsPageAuthorized = (!$_SESSION['XE_PAGE_AUTHORIZED_TIME'][$this->module_info->module_srl] || time() <= $_SESSION['XE_PAGE_AUTHORIZED_TIME'][$this->module_info->module_srl] + $expireTime);
+		$bIsDocumentAuthorized = (!$_SESSION['XE_DOCUMENT_AUTHORIZED_TIME'][$document_srl] || time() <= $_SESSION['XE_DOCUMENT_AUTHORIZED_TIME'][$document_srl] + $expireTime);
+
+		if($config->page_auth_expire_time > 0 && ($bIsPageAuthorized || $bIsDocumentAuthorized))
 		{
 			if($usePointUnlock)
 			{
@@ -89,15 +121,18 @@ class pagelockerController extends pagelocker
 				$output = executeQuery('pagelocker.getPageAuthorizeLogByMemberSrl', $args);
 			}
 
-			$args = new stdClass;
-			$args->module_srl = $this->module_info->module_srl;
-			$args->member_srl = $logged_info->member_srl;
-			$args->ipaddress = $_SERVER['REMOTE_ADDR'];
-			$args->time = $expireTime;
-			$output = executeQuery('pagelocker.insertPageAuthorizeLog', $args);
-			if(!$output->toBool())
+			if($bIsPageAuthorized)
 			{
-				return $output;
+				$args = new stdClass;
+				$args->module_srl = $this->module_info->module_srl;
+				$args->member_srl = $logged_info->member_srl;
+				$args->ipaddress = $_SERVER['REMOTE_ADDR'];
+				$args->time = $expireTime;
+				$output = executeQuery('pagelocker.insertPageAuthorizeLog', $args);
+				if(!$output->toBool())
+				{
+					return $output;
+				}
 			}
 
 			$config->page_unlock_point = (int) $config->page_unlock_point;
@@ -111,10 +146,21 @@ class pagelockerController extends pagelocker
 				$oPointController->setPoint($logged_info->member_srl, $config->page_unlock_point, 'subtract');
 			}
 
-			// 세션에 인증 여부 저장
-			$_SESSION['XE_PAGE_AUTHORIZED'][$this->module_info->module_srl] = true;
-			// 세션에 인증 시간 저장
-			$_SESSION['XE_PAGE_AUTHORIZED_TIME'][$this->module_info->module_srl] = time();
+			if($bIsPageAuthorized)
+			{
+				// 세션에 인증 여부 저장
+				$_SESSION['XE_PAGE_AUTHORIZED'][$this->module_info->module_srl] = true;
+				// 세션에 인증 시간 저장
+				$_SESSION['XE_PAGE_AUTHORIZED_TIME'][$this->module_info->module_srl] = time();
+			}
+
+			if($bIsDocumentAuthorized)
+			{
+				// 세션에 인증 여부 저장
+				$_SESSION['XE_DOCUMENT_AUTHORIZED'][$document_srl] = true;
+				// 세션에 인증 시간 저장
+				$_SESSION['XE_DOCUMENT_AUTHORIZED_TIME'][$document_srl] = time();
+			}
 		}
 
 		$returnUrl = Context::get('success_return_url');
@@ -143,9 +189,6 @@ class pagelockerController extends pagelocker
 
 				// 로그인 정보를 가져옵니다
 				$logged_info = Context::get('logged_info');
-
-				$grant = Context::get('grant');
-
 
 				$supportedListAct = array(
 					'dispBoardContent'
@@ -206,7 +249,14 @@ class pagelockerController extends pagelocker
 		}
 		else
 		{
-			if(Context::get('act') !== 'dispMemberLoginForm')
+			$oDocument = Context::get('oDocument');
+
+			// 게시물별 잠금을 사용중인지 확인
+			$bUseEachDocumentLock = ($pagelockerConfig->use_each_document_lock && $pagelockerConfig->use_each_document_lock != 'Y');
+			// 게시물 읽기 화면인지 확인
+			$bIsBoardReadPage = $oModule->module_info->module == 'board' && $oDocument && $oDocument->isExists() && $oDocument->getExtraEidValue('lock_password');
+
+			if((Context::get('act') !== 'dispMemberLoginForm' && $bUseEachDocumentLock) || ($bIsBoardReadPage))
 			{
 				$oModule->setTemplatePath($this->module_path . 'tpl');
 				$oModule->setTemplateFile('page_authorize');
