@@ -1,0 +1,51 @@
+<section class="section">
+	<form action="./" method="post" class="x_form-horizontal">
+		<input type="hidden" name="module" value="pagelocker">
+		<input type="hidden" name="act" value="procPagelockerAdminSaveSetting">
+		<input type="hidden" name="success_return_url" value="{getRequestUriByServerEnviroment()}">
+		<input type="hidden" name="target_module_srl" value="{$module_info->module_srl ? $module_info->module_srl : $module_srls}" />
+
+		<h1>{$lang->pagelocker}</h1>
+		<div class="x_control-group">
+			<label for="" class="x_control-label">{$lang->use_lock}</label>
+			<div class="x_controls">
+				<label for="use_lock">
+					<input type="checkbox" id="use_lock" name="use_lock" value="Y" class="x_inline"  checked|cond="$pagelockerConfig->enabled == 'Y'"> 
+					{$lang->use}
+				</label>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label for="page_lock_type" class="x_control-label">{$lang->page_lock_type}</label>
+			<div class="x_controls">
+				<select name="page_lock_type" id="page_lock_type">
+					<option value="password">비밀번호</option>
+					<option value="point">포인트 차감</option>
+				</select>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label for="page_auth_expire_time" class="x_control-label">{$lang->page_auth_expire_time}</label>
+			<div class="x_controls">
+				<input type="number" name="page_auth_expire_time" value="{$pagelockerConfig->page_auth_expire_time}"> 
+				<select name="page_auth_expire_time_unit">
+					<option value="MINUTES" selected|cond="$pagelockerConfig->page_auth_expire_time_unit === 'MINTUES'">{$lang->page_auth_expire_time_units['MINUTES']}</option>
+					<option value="HOURS" selected|cond="$pagelockerConfig->page_auth_expire_time_unit === 'HOURS'">{$lang->page_auth_expire_time_units['HOURS']}</option>
+					<option value="DAYS" selected|cond="$pagelockerConfig->page_auth_expire_time_unit === 'DAYS'">{$lang->page_auth_expire_time_units['DAYS']}</option>
+					<option value="MONTHS" selected|cond="$pagelockerConfig->page_auth_expire_time_unit === 'MONTHS'">{$lang->page_auth_expire_time_units['MONTHS']}</option>
+				</select>
+				<p class="x_help-block">한 번 인증을 받고 입력한 시간이 지나면 인증이 해제되도록 할 수 있습니다.</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label for="page_password" class="x_control-label">{$lang->page_password}</label>
+			<div class="x_controls">
+				<input type="password" name="page_password" value="{$pagelockerConfig->page_password}">
+				<p class="x_help-block">잠금 해제할 수 있는 비밀번호를 입력해주세요. 입력하지 않으면 일반 사용자가 잠금을 해제할 수 없습니다.</p>
+			</div>
+		</div>
+		<div class="btnArea">
+			<input type="submit" class="x_btn x_btn-primary" value="{$lang->cmd_save}">
+		</div>
+	</form>
+</section>

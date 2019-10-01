@@ -1,0 +1,15 @@
+<query id="getPageAuthorizeLog" action="select">
+	<tables>
+		<table name="pagelocker_page_auth_log" />
+	</tables>
+	<columns>
+		<column name="*" />
+	</columns>
+	<conditions />
+	<navigation>
+		<index var="sort_index" default="auth_srl" order="order_type" />
+		<page var="page" default="1" />
+		<page_count var="page_count" default="10" />
+		<list_count var="list_count" default="30" />
+	</navigation>
+</query>

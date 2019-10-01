@@ -1,0 +1,19 @@
+<form action="{getRequestUriByServerEnviroment()}" method="post" class="page-lock<!--@if($module_info->page_auth_expire_time > 0)--> page-has-caution<!--@end-->" ruleset="pageAuthorizeTypePoint">
+	<input type="hidden" name="module" value="easyxe">
+	<input type="hidden" name="act" value="procEasyxePageAuthorize">
+	<input type="hidden" name="xe_validator_id" value="/modules/page/tpl/page_authorize/1">
+	<input type="hidden" name="success_return_url" value="{getRequestUriByServerEnviroment()}">
+
+	<h1>"{$lang->this_page_is_locked}"</h1>
+	<div class="page-controls">
+		<div class="page-description" cond="$module_info->page_auth_expire_time > 0">
+		{$module_info->page_unlock_point} 포인트를 소모하여 잠금을 해제할 수 있습니다.
+		<block cond="$module_info->page_auth_expire_time > 0">
+		<br>
+		잠금 해제 후 
+		{$module_info->page_auth_expire_time}{$lang->page_auth_expire_time_units[$module_info->page_auth_expire_time_unit]} 뒤에 다시 잠깁니다.
+		</block>
+		</div>
+		<input type="submit" value="잠금 해제" class="btn">
+	</div>
+</form>

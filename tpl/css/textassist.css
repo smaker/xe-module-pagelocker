@@ -1,0 +1,100 @@
+div.textassist {
+	display: none;
+	position: absolute;
+	width: 200px;
+	min-width: 200px;
+	max-width: 300px;
+	background: #FFF;
+	border: #D7D7D7 1px solid;
+	-moz-box-shadow: rgba(0, 0, 0, 0.3) 0px 10px 15px;
+	-khtml-box-shadow: rgba(0, 0, 0, 0.3) 0px 10px 15px;
+	box-shadow: rgba(0, 0, 0, 0.3) 0px 10px 15px;
+	-moz-border-radius: 5px;
+	-khtml-border-radius: 5px;
+	border-radius: 5px;
+	overflow: hidden;
+	z-index: 10000;
+}
+
+div.textassist ul {
+	list-style: none;
+	margin: 0px;
+	padding: 0px 0px;
+}
+
+div.textassist ul li.divider {
+	display: block;
+	border-top: #EEE 1px solid;
+	margin: 5px 0px;
+	line-height: 0px;
+	height: 0px;
+}
+
+div.textassist ul li a {
+	display: block;
+	color: #000;
+	padding: 0px 8px 0px 8px;
+}
+
+div.textassist ul li.first a {
+	-moz-border-radius: 4px 4px 0px 0px;
+	-khtml-border-radius: 4px 4px 0px 0px;
+	border-radius: 4px 4px 0px 0px;
+}
+
+div.textassist ul li.last a {
+	-moz-border-radius: 0px 0px 4px 4px;
+	-khtml-border-radius: 0px 0px 4px 4px;
+	border-radius: 0px 0px 4px 4px;
+}
+
+div.textassist ul li a span {
+	display: block;
+	padding: 8px 0px 8px 26px;
+	word-wrap:normal;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+div.textassist ul li a:hover {
+	color: #FFF;
+	background: #5871e5 url('img/mnbg.png') repeat-x bottom;
+}
+
+/***************
+	  Icons
+***************/
+
+div.textassist ul li a.goto span {
+	background-image: url('img/internet-web-browser.png');
+}
+
+div.textassist ul li a.mailto span {
+	background-image: url('img/mailto.png');
+}
+
+div.textassist ul li a.search span {
+	background-image: url('img/search.png');
+}
+
+div.textassist ul li a.wikipedia span {
+	background-image: url('img/wikipedia.png');
+}
+
+div.textassist ul li a.translate span {
+	background-image: url('img/translate.ico');
+}
+
+div.textassist ul li a.map span {
+	background-image: url('img/pin.png');
+}
+
+div.textassist ul li a.email span {
+	background-image: url('img/email.png');
+}
+
+div.textassist ul li a span {
+	background-position: 0px center;
+	background-repeat: no-repeat;
+}

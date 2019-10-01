@@ -1,0 +1,19 @@
+<query id="getPageAuthorizeLogByMemberSrl" action="select">
+	<tables>
+		<table name="pagelocker_page_auth_log" />
+	</tables>
+	<columns>
+		<column name="*" />
+	</columns>
+	<conditions>
+		<condition operation="equal" column="member_srl" var="member_srl" notnull="notnull" />
+		<condition operation="equal" column="module_srl" var="module_srl" notnull="notnull" pipe="and" />
+		<condition operation="less" column="DATE_FORMAT(TIMESTAMP(regdate) + time, '%Y%m%d%H%i%s')" default="CURDATE()" pipe="and" />
+	</conditions>
+	<navigation>
+		<index var="sort_index" default="auth_srl" order="order_type" />
+		<page var="page" default="1" />
+		<page_count var="page_count" default="10" />
+		<list_count var="list_count" default="30" />
+	</navigation>
+</query>

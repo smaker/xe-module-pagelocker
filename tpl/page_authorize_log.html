@@ -1,0 +1,51 @@
+<include target="_header.html" />
+
+{@
+	$oMemberModel = getModel('member');
+	$memberInfo = array();
+}
+
+<div class="x_page-header">
+	<h1>잠금 해제 기록</h1>
+</div>
+
+<table class="x_table">
+	<thead>
+		<tr>
+			<th>#</th>
+			<th>{$lang->user}</th>
+			<th>{$lang->ipaddress}</th>
+			<th>{$lang->date}</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr loop="$log_list => $no, $log">
+			<block cond="$log->member_srl && !isset($memberInfo[$log->member_srl])">
+			{@$memberInfo[$log->member_srl] = $oMemberModel->getMemberInfoByMemberSrl($log->member_srl, array('nick_name'))}
+			</block>
+			<block cond="!$log->member_srl && !isset($memberInfo[$log->member_srl])">
+			{@$memberInfo[$log->member_srl] = new stdClass()}
+			</block>
+			<td>{$no}</td>
+			<td>
+				<!--@if($memberInfo[$log->member_srl]->nick_name)--><a href="#" class="member_{$log->member_srl}">{$memberInfo[$log->member_srl]->nick_name}</a><!--@else-->-<!--@end-->
+			</td>
+			<td>{$log->ipaddress}</td>
+			<td>{zdate($log->date)}</td>
+		</tr>
+	</tbody>
+</table>
+
+<div class="x_pagination center">
+	<ul>
+		<li class="x_disabled"|cond="$page == 1">
+			<a href="{getUrl('page', '')}">{$lang->first_page}</a>
+		</li>
+		<li class="x_active"|cond="$page == $page_no" loop="$page_no = $page_navigation->getNextPage()">
+			<a href="{getUrl('page', $page_no)}">{$page_no}</a>
+		</li>
+		<li class="x_disabled"|cond="$page == $page_navigation->last_page">
+			<a href="{getUrl('page', $page_navigation->last_page)}">{$lang->last_page}</a>
+		</li>
+	</ul>
+</div>

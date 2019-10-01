@@ -1,0 +1,29 @@
+.page-lock{margin:0 auto;padding:0;background:url(../img/bgLock.png) no-repeat 0 44px;width:433px;height:204px}
+
+.page-lock h1{margin:0;padding:64px 0 32px 138px;font:24px "나눔고딕", NanumGothic, "맑은 고딕", Malgun;}
+.page-lock p{margin:0;padding:0;line-height:32px;text-align:center}
+.page-lock .inputText{width:150px;padding:3px 5px}
+.page-lock .page-controls{padding-left:128px;text-align:center}
+.page-lock .page-description{color:red;margin-bottom:12px}
+.page-lock input{vertical-align:middle}
+
+.page-lock.page-has-caution{background-position:0 59px;height:246px}
+
+/**
+ * Mobile
+ */
+@media (max-width:767px) {
+	.page-lock {
+		background: none;
+		width: 100%;
+		height: 100%;
+	}
+	.page-lock h1 {
+		padding:64px 0 32px 0;
+		text-align: center;
+	}
+
+	.page-lock .page-controls {
+		padding-left: 0;
+	}
+}

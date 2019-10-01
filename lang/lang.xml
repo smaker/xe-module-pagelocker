@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<lang>
+	<item name="pagelocker">
+		<value xml:lang="ko"><![CDATA[페이지 잠금]]></value>
+	</item>
+	<item name="use_lock">
+		<value xml:lang="ko"><![CDATA[페이지 잠금]]></value>
+	</item>
+	<item name="page_password">
+		<value xml:lang="ko"><![CDATA[페이지 비밀번호]]></value>
+	</item>
+	<item name="page_auth_expire_time">
+		<value xml:lang="ko"><![CDATA[페이지 잠금 유효 시간]]></value>
+	</item>
+	<item name="page_unlock_point">
+		<value xml:lang="ko"><![CDATA[페이지 잠금 해제 포인트]]></value>
+	</item>
+	<item name="this_page_is_locked">
+		<value xml:lang="ko"><![CDATA[이 페이지는 잠겨있습니다.]]></value>
+	</item>
+	<item name="page_auth_expire_time_units" type="array">
+		<item name="MINUTES">
+			<value xml:lang="ko"><![CDATA[분]]></value>
+		</item>
+		<item name="HOURS">
+			<value xml:lang="ko"><![CDATA[시간]]></value>
+		</item>
+		<item name="DAYS">
+			<value xml:lang="ko"><![CDATA[일]]></value>
+		</item>
+		<item name="MONTHS">
+			<value xml:lang="ko"><![CDATA[개월]]></value>
+		</item>
+	</item>
+	<item name="msg_unlock_login_required">
+		<value xml:lang="ko"><![CDATA[로그인 후 잠금 해제를 할 수 있습니다.]]></value>
+	</item>
+	<item name="msg_not_enough_to_point_for_unlock">
+		<value xml:lang="ko"><![CDATA[포인트가 부족하여 잠금을 해제할 수 없습니다.]]></value>
+	</item>
+	<item name="page_lock_type">
+		<value xml:lang="ko"><![CDATA[페이지 잠금 해제 방식]]></value>
+	</item>
+</lang>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module>
+	<grants />
+	<permissions />
+	<actions>
+		<!-- Pagelocker 설정 -->
+		<action name="dispPagelockerAdminSetting" type="view" admin_index="true" />
+		<!-- 메뉴 관리 -->>
+		<action name="dispPagelockerAdminPageAuthorizeLog" type="view" />
+
+		<!-- Pagelocker 설정 저장 -->
+		<action name="procPagelockerAdminSaveSetting" type="controller" />
+		<!-- 비밀번호/포인트 인증 -->
+		<action name="procPagelockerPageAuthorize" type="controller" method="POST"/>
+	</actions>
+</module>
