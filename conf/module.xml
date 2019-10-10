@@ -4,9 +4,9 @@
 	<permissions />
 	<actions>
 		<!-- Pagelocker 설정 -->
-		<action name="dispPagelockerAdminSetting" type="view" admin_index="true" />
+		<action name="dispPagelockerAdminSetting" type="view" />
 		<!-- 메뉴 관리 -->>
-		<action name="dispPagelockerAdminPageAuthorizeLog" type="view" />
+		<action name="dispPagelockerAdminPageAuthorizeLog" type="view" admin_index="true" />
 
 		<!-- Pagelocker 설정 저장 -->
 		<action name="procPagelockerAdminSaveSetting" type="controller" />
