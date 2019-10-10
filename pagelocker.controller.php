@@ -129,6 +129,7 @@ class pagelockerController extends pagelocker
 				$args->ipaddress = $_SERVER['REMOTE_ADDR'];
 				$args->time = $expireTime;
 				$args->point = (int) $config->page_unlock_point;
+				$args->date = date('Ymd');
 				$output = executeQuery('pagelocker.insertPageAuthorizeLog', $args);
 				if(!$output->toBool())
 				{
