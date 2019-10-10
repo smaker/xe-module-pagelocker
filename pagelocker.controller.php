@@ -63,7 +63,7 @@ class pagelockerController extends pagelocker
 			$_SESSION['XE_DOCUMENT_AUTHORIZED_TIME'] = array();
 		}
 
-		$bIsCorrectPassword = $config->page_password != $page_password && ($oDocument && $oDocument->getExtraEidValue('lock_password') == $page_password);
+		$bIsCorrectPassword = ($config->page_password != $page_password) || ($oDocument && $oDocument->getExtraEidValue('lock_password') != $page_password);
 
 		// 비밀번호 잠금이면서 비밀번호가 틀린 경우
 		if(!$bIsCorrectPassword && $config->page_lock_type == 'password')
@@ -128,6 +128,7 @@ class pagelockerController extends pagelocker
 				$args->member_srl = $logged_info->member_srl;
 				$args->ipaddress = $_SERVER['REMOTE_ADDR'];
 				$args->time = $expireTime;
+				$args->point = (int) $config->page_unlock_point;
 				$output = executeQuery('pagelocker.insertPageAuthorizeLog', $args);
 				if(!$output->toBool())
 				{
@@ -168,58 +169,6 @@ class pagelockerController extends pagelocker
 	}
 
 	/**
-	 * before_module_proc 시점에서 실행되는 trigger
-	 */
-	public function triggerBeforeModuleProc(&$oModule)
-	{
-		if(Context::getResponseMethod() !== 'HTML')
-		{
-			return $this->makeObject();
-		}
-
-		switch($oModule->module)
-		{
-			case 'board':
-			case 'wiki':
-			case 'page':
-				// pagelockerxeModel 객체 생성
-				$oPagelockerModel = getModel('pagelocker');
-
-				$config = $oPagelockerModel->getPagelockerPartConfig($oModule->module_info->module_srl);
-
-				// 로그인 정보를 가져옵니다
-				$logged_info = Context::get('logged_info');
-
-				$supportedListAct = array(
-					'dispBoardContent'
-				);
-				$supportedViewAct = array(
-					'dispPageIndex',
-					'dispWikiContent'
-				);
-				$supportedWriteAct = array(
-					'dispBoardWrite',
-					'dispWikiEditPage'
-				);
-
-				// 각 모듈의 목록 페이지인 경우
-				if(in_array($oModule->act, $supportedListAct))
-				{
-					$document_srl = Context::get('document_srl');
-
-					// documentModel 객체 생성
-					$oDocumentModel = getModel('document');
-
-					// before_module_proc 시점에서는 아직 document 정보를 가져오지 않았으니 별도로 가져온다
-					$oDocument = $oDocumentModel->getDocument($document_srl, false, true);
-				}
-
-				break;
-		}
-
-		return $this->makeObject();
-	}
-	/**
 	 * after_module_proc 시점에 실행되는 trigger
 	 */
 	public function triggerAfterModuleProc(&$oModule)
@@ -242,6 +191,7 @@ class pagelockerController extends pagelocker
 			return $this->makeObject();
 		}
 
+		// 인증이 완료되었는지 확인
 		$isAuthorized = getView('pagelocker')->_isAuthorized();
 		if($isAuthorized === true)
 		{
@@ -252,18 +202,23 @@ class pagelockerController extends pagelocker
 			$oDocument = Context::get('oDocument');
 
 			// 게시물별 잠금을 사용중인지 확인
-			$bUseEachDocumentLock = ($pagelockerConfig->use_each_document_lock && $pagelockerConfig->use_each_document_lock != 'Y');
+			$bUseEachDocumentLock = ($pagelockerConfig->use_each_document_lock && $pagelockerConfig->use_each_document_lock == 'Y');
 			// 게시물 읽기 화면인지 확인
 			$bIsBoardReadPage = $oModule->module_info->module == 'board' && $oDocument && $oDocument->isExists() && $oDocument->getExtraEidValue('lock_password');
 
-			if((Context::get('act') !== 'dispMemberLoginForm' && $bUseEachDocumentLock) || ($bIsBoardReadPage))
+			if((Context::get('act') !== 'dispMemberLoginForm') && $bUseEachDocumentLock && $bIsBoardReadPage && !$_SESSION['XE_DOCUMENT_AUTHORIZED'][$oDocument->get('document_srl')])
+			{
+				$oModule->setTemplatePath($this->module_path . 'tpl');
+				$oModule->setTemplateFile('page_authorize');
+				Context::set('pagelockerConfig', $pagelockerConfig);
+			}
+			elseif((Context::get('act') !== 'dispMemberLoginForm') && !$bUseEachDocumentLock && !$_SESSION['XE_PAGE_AUTHORIZED'][$oModule->module_info->module_srl])
 			{
 				$oModule->setTemplatePath($this->module_path . 'tpl');
 				$oModule->setTemplateFile('page_authorize');
 				Context::set('pagelockerConfig', $pagelockerConfig);
 			}
 		}	
-
 
 		return $this->makeObject();
 	}
