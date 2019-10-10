@@ -30,6 +30,7 @@ class pagelockerAdminController extends pagelocker
 		$this->pagelockerConfig->page_lock_type = Context::get('page_lock_type');
 		$this->pagelockerConfig->page_password = Context::get('page_password');
 		$this->pagelockerConfig->use_each_document_lock = Context::get('use_each_document_lock');
+		$this->pagelockerConfig->page_unlock_point = (int) Context::get('page_unlock_point');
 
 		$oModuleController = getController('module');
 		$oModuleController->insertModulePartConfig('pagelocker', $target_module_srl, $this->pagelockerConfig);

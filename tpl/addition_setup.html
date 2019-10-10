@@ -33,7 +33,7 @@
 			<div class="x_controls">
 				<select name="page_lock_type" id="page_lock_type">
 					<option value="password">비밀번호</option>
-					<!--<option value="point">포인트 차감</option>-->
+					<option value="point">포인트 차감</option>
 				</select>
 			</div>
 		</div>
@@ -55,6 +55,13 @@
 			<div class="x_controls">
 				<input type="password" name="page_password" value="{$pagelockerConfig->page_password}">
 				<p class="x_help-block">잠금 해제할 수 있는 비밀번호를 입력해주세요. 입력하지 않으면 일반 사용자가 잠금을 해제할 수 없습니다.</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label for="page_unlock_point" class="x_control-label">{$lang->page_unlock_point}</label>
+			<div class="x_controls">
+				<input type="number" name="page_unlock_point" value="{$pagelockerConfig->page_unlock_point}">
+				<p class="x_help-block">잠금 해제 시 소모할 포인트를 입력해주세요.</p>
 			</div>
 		</div>
 		<div class="btnArea">
