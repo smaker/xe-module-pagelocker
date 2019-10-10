@@ -41,4 +41,7 @@
 	<item name="page_lock_type">
 		<value xml:lang="ko"><![CDATA[페이지 잠금 해제 방식]]></value>
 	</item>
+	<item name="page_unlock_point">
+		<value xml:lang="ko"><![CDATA[페이지 잠금 해제 포인트]]></value>
+	</item>
 </lang>

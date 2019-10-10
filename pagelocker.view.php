@@ -51,17 +51,31 @@ class pagelockerView extends pagelocker
 					$expireTime *= 60 * 60 * 24;
 					break;
 				case 'MONTHS':
-					$expireTime *= 60 * 60 * 30;
+					$expireTime *= 60 * 60 * 24 * 30;
 					break;
 			}
 
-			if(time() > $_SESSION['XE_PAGE_AUTHORIZED_TIME'][$module_info->module_srl] + $expireTime)
+			$document_srl = Context::get('document_srl');
+
+			$oDocument = Context::get('oDocument');
+			if($oDocument && $oDocument->isExists())
 			{
-				return false;
+				if(time() > $_SESSION['XE_DOCUMENT_AUTHORIZED_TIME'][$document_srl] + $expireTime || $_SESSION['XE_DOCUMENT_AUTHORIZED_TIME'][$document_srl] + $expireTime)
+				{
+					return false;
+				}
 			}
+			else
+			{
+				if(time() > $_SESSION['XE_PAGE_AUTHORIZED_TIME'][$module_info->module_srl] + $expireTime || $_SESSION['XE_DOCUMENT_AUTHORIZED_TIME'][$document_srl] + $expireTime)
+				{
+					return false;
+				}
+			}
+
 		}
 
-		return $_SESSION['XE_PAGE_AUTHORIZED'][$module_info->module_srl];
+		return ($oDocument && $oDocument->isExists()) ? $_SESSION['XE_DOCUMENT_AUTHORIZED'][$document_srl] : $_SESSION['XE_PAGE_AUTHORIZED'][$module_info->module_srl];
 	}
 
 	/**
