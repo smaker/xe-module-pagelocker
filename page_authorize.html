@@ -1,0 +1,12 @@
+<load target="css/page_lock.css" />
+<div class="message {$XE_VALIDATOR_MESSAGE_TYPE}" cond="$XE_VALIDATOR_MESSAGE && $XE_VALIDATOR_ID == '/modules/page/tpl/page_authorize/1'">
+	<p>{$XE_VALIDATOR_MESSAGE}</p>
+</div>
+
+{@
+	$isTypePassword = $pagelockerConfig->page_auth_expire_time > 0 && ($pagelockerConfig->page_unlock_point < 1 || $pagelockerConfig->page_lock_type != 'point');
+	$isTypePoint = $pagelockerConfig->page_lock_type == 'point';
+}
+
+<include target="_authorize_input_password.html" cond="$isTypePassword" />
+<include target="_authorize_point.html" cond="$isTypePoint" />
