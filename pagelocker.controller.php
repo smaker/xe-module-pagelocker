@@ -63,7 +63,7 @@ class pagelockerController extends pagelocker
 			$_SESSION['XE_DOCUMENT_AUTHORIZED_TIME'] = array();
 		}
 
-		$bIsCorrectPassword = ($config->use_each_document_lock && $config->use_each_document_lock != 'Y' && $config->page_password === $page_password) || ($oDocument && $oDocument->getExtraEidValue('lock_password') === $page_password);
+		$bIsCorrectPassword = ($config->use_each_document_lock != 'Y' && $config->page_password === $page_password) || ($oDocument && $oDocument->getExtraEidValue('lock_password') === $page_password);
 
 		// 비밀번호 잠금이면서 비밀번호가 틀린 경우
 		if(!$bIsCorrectPassword && $config->page_lock_type == 'password')
